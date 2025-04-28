@@ -1,0 +1,29 @@
+﻿@page "/"
+@using BlazorApp.Models
+
+@inject IGitHubService GitHubService
+
+@rendermode InteractiveServer
+
+
+<h3>Versions</h3>
+
+<div>
+    @foreach (var item in _tags)
+    {
+        <Commit Repo = "@_repo" Tag = "@item.Name"/>
+    }
+</div>
+
+@code {
+    private List<Tag> _tags = new List<Tag>();
+
+    private string _token = Environment.GetEnvironmentVariable("GITHUB_TOKEN")!;
+    private string _owner = "BoryaTheExplorer";
+    private string _repo = "BlazorApp";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _tags = await GitHubService.GetTagsAsync(_token, _owner, _repo);
+    }
+}

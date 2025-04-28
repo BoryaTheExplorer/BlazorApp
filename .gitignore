@@ -1,0 +1,9 @@
+_framework
+bin
+obj
+wwwroot/_content
+.vs
+*.csproj.user
+*.sln.docstates
+*.suo
+*.userprefs
