@@ -1,0 +1,13 @@
+﻿.commit {
+    margin: 0;
+    display: flex;
+    align-self:stretch;
+    width: 100%;
+    justify-content:center;
+    flex-direction: row;
+    align-items: center;
+}
+.commit-item {
+    margin-right: 20%;
+    margin-left: 22%;
+}

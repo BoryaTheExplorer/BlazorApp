@@ -30,6 +30,7 @@ namespace BlazorApp
             response.EnsureSuccessStatusCode();
 
             string json = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(json);
             List<Tag> tags = JsonSerializer.Deserialize<List<Tag>>(json, _serializerOptions);
 
             return tags ?? new List<Tag>();

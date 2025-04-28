@@ -1,9 +1,13 @@
-﻿<div>
-    @Repo @Tag
+﻿<div class="commit">
+    <div class="commit-item">@Repo</div> 
+    <a class="commit-item"href="@Url" target="_blank">@Tag</a>
+    <button class="btn btn-primary commit-item">Deploy</button>
 </div>
 @code {
     [Parameter]
     public string Repo { get; set; } = String.Empty;
     [Parameter]
     public string Tag { get; set; } = String.Empty;
+    [Parameter]
+    public string Url { get; set; } = String.Empty;
 }
