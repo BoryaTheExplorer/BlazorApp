@@ -1,13 +1,24 @@
 ﻿.commit {
     margin: 0;
+    margin-bottom: 1%;
     display: flex;
+
     align-self:stretch;
     width: 100%;
+
     justify-content:center;
+
     flex-direction: row;
     align-items: center;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+
+}
+.commit:hover {
+    background-color: aliceblue;
 }
 .commit-item {
     margin-right: 20%;
-    margin-left: 22%;
+    margin-left: 20%;
 }

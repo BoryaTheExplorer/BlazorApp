@@ -1,7 +1,9 @@
-﻿<div class="commit">
+﻿@inject IGitHubService GitHubService
+
+<div class="commit">
     <div class="commit-item">@Repo</div> 
     <a class="commit-item"href="@Url" target="_blank">@Tag</a>
-    <button class="btn btn-primary commit-item">Deploy</button>
+    <button class="btn btn-primary commit-item" @onclick="NotifyClicked" disabled="@(IsActiveCommit)">@NameButton()</button>
 </div>
 @code {
     [Parameter]
@@ -10,4 +12,17 @@
     public string Tag { get; set; } = String.Empty;
     [Parameter]
     public string Url { get; set; } = String.Empty;
+    [Parameter]
+    public bool IsActiveCommit { get; set; } = true;
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected async Task NotifyClicked()
+    {
+        await OnClick.InvokeAsync(null);
+    }
+    protected string NameButton()
+    {
+        return IsActiveCommit ? "Deployed" : "Deploy";
+    }
 }

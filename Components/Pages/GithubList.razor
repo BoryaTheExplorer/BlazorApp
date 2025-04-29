@@ -11,7 +11,7 @@
 <div>
     @foreach (var item in _tags)
     {
-        <Commit Url = "@GetUrl(item.Commit.Sha)" Repo = "@_repo" Tag = "@item.Name"/>
+        <Commit OnClick = "() => SetBranchToCommitAsync(item.Commit.Sha)" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
     }
 </div>
 
@@ -21,20 +21,27 @@
     private string _token = Environment.GetEnvironmentVariable("GITHUB_TOKEN")!;
     private string _owner = "BoryaTheExplorer";
     private string _repo = "BlazorApp";
-    private string _url = "";
+    private string _mainSha = "";
 
     protected override async Task OnInitializedAsync()
     {
-        _url = "";
-        //_tags.Add(new Tag { Name = "A" });
+        _mainSha = await GitHubService.GetBranchShaAsync(_token, _owner, _repo);
         _tags = await GitHubService.GetTagsAsync(_token, _owner, _repo);
     }
-    protected string GetUrl(string sha)
+    protected string GetCommitUrl(string sha)
     {
         return $"https://github.com/{_owner}/{_repo}/commit/{sha}";
     }
     protected string GetFormattedDate(string date)
     {
         return date.Remove(10, date.Length);
+    }
+    protected bool IsMainAtCommit(string commitSha)
+    {
+        return string.Equals(commitSha, _mainSha, StringComparison.OrdinalIgnoreCase); ;
+    }
+    protected async Task SetBranchToCommitAsync(string commitSha)
+    {
+        await GitHubService.SetBranchToCommitAsync(_token, _owner, _repo, commitSha);
     }
 }
