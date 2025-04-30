@@ -1,9 +1,11 @@
 ﻿@inject IGitHubService GitHubService
+@rendermode InteractiveServer
 
 <div class="commit">
     <div class="commit-item">@Repo</div> 
     <a class="commit-item"href="@Url" target="_blank">@Tag</a>
-    <button class="btn btn-primary commit-item" @onclick="NotifyClicked" disabled="@(IsActiveCommit)">@NameButton()</button>
+    <button class="btn btn-primary commit-item" @onclick="NotifyDeployClicked" disabled="@(!IsActiveCommit)">Deploy</button>
+    <button class="btn btn-primary commit-item" @onclick="NotifyRollbackClicked" disabled="@IsActiveCommit">Rollback</button>
 </div>
 @code {
     [Parameter]
@@ -12,17 +14,21 @@
     public string Tag { get; set; } = String.Empty;
     [Parameter]
     public string Url { get; set; } = String.Empty;
+
     [Parameter]
     public bool IsActiveCommit { get; set; } = true;
-    [Parameter]
-    public EventCallback OnClick { get; set; }
 
-    protected async Task NotifyClicked()
+    [Parameter]
+    public EventCallback OnDeployClick { get; set; }
+    [Parameter]
+    public EventCallback OnRollbackClick { get; set; }
+
+    protected async Task NotifyDeployClicked()
     {
-        await OnClick.InvokeAsync(null);
+        await OnDeployClick.InvokeAsync(null);
     }
-    protected string NameButton()
+    protected async Task NotifyRollbackClicked()
     {
-        return IsActiveCommit ? "Deployed" : "Deploy";
+        await OnRollbackClick.InvokeAsync(null);
     }
 }
