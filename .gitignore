@@ -7,3 +7,4 @@ wwwroot/_content
 *.sln.docstates
 *.suo
 *.userprefs
+.terraform/
