@@ -43,6 +43,7 @@
     protected async Task SetBranchToCommitAsync(string commitSha)
     {
         await GitHubService.SetBranchToCommitAsync(_token, _owner, _repo, commitSha);
+        _mainSha = commitSha;
     }
     protected async Task TriggerMainDeployment()
     {
