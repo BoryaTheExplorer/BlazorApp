@@ -5,6 +5,11 @@ terraform {
       version = "~> 5.0"
     }
   }
+  backend "s3" {
+    bucket  = "borys-terraform-state-bucket"
+    key     = "global/s3/terraform.tfstate"
+    region  = "eu-north-1"
+  }
 }
 
 provider "aws" {
