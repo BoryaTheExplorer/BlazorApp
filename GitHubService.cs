@@ -76,5 +76,21 @@ namespace BlazorApp
             HttpResponseMessage response = await _client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task TriggerWorkflowAsync(string token, string owner, string repo, string workflowFileName, string @ref = "main")
+        {
+            var payload = new
+            {
+                @ref = @ref
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _url + $"{owner}/{repo}/actions/{workflowFileName}/dispatches");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.Content = content;
+
+            HttpResponseMessage response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

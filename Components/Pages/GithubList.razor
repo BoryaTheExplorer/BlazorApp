@@ -11,7 +11,7 @@
 <div>
     @foreach (var item in _tags)
     {
-        <Commit OnClick = "() => SetBranchToCommitAsync(item.Commit.Sha)" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
+        <Commit OnRollbackClick="() => SetBranchToCommitAsync(item.Commit.Sha)" OnDeployClick="() => TriggerMainDeployment()" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
     }
 </div>
 
@@ -43,5 +43,9 @@
     protected async Task SetBranchToCommitAsync(string commitSha)
     {
         await GitHubService.SetBranchToCommitAsync(_token, _owner, _repo, commitSha);
+    }
+    protected async Task TriggerMainDeployment()
+    {
+        await GitHubService.TriggerWorkflowAsync(_token, _owner, _repo, "deploy.yml", "main");
     }
 }
