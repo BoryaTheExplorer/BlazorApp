@@ -1,0 +1,4 @@
+- name: Restart blazorapp
+  systemd:
+    name: blazorapp
+    state: restarted
