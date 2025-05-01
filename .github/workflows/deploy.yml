@@ -55,6 +55,6 @@ jobs:
       - name: Run Playbook
         run: |
           ls -al
-          cd BlazorApp/Ansible
+          cd Ansible
           ansible-playbook -i "${{ env.SERVER_IP }}," deploy.yml \
             --private-key ~/.ssh/id_rsa -u ubuntu
