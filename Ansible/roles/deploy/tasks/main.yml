@@ -1,0 +1,50 @@
+- name: Install Microsoft repo
+  shell: |
+    wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    sudo apt-get update
+  args: 
+    warn: false
+
+- name: Install .NET
+  apt: 
+    name: aspnetcore-runtime-8.0
+    state: present
+
+- name: Create Directory
+  file:
+    path: /var/www/blazorapp
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Copy App
+  copy:
+    src: ../../../publish/
+    dest: /var/www/blazorapp
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Deploy
+  copy:
+    dest: /etc/systemd/system/blazorapp.service
+    content: |
+      [Unit]
+      Description=Blazor App
+      After=network.target
+
+      [Service]
+      WorkingDirectory=/var/www/blazorapp
+      ExecStart=/usr/bin/dotnet /var/www/blazorapp/BlazorApp.dll
+      Restart=always
+      RestartSec=10
+      KillSignal=SIGINT
+      SyslogIdentifier=blazorapp
+      User=ubuntu
+      Environment=ASPNETCORE_ENVIRONMENT=Production
+
+      [Install]
+      WantedBy=multi-user.target
+    notify: Restart blazorapp
