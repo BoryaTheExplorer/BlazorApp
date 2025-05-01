@@ -37,7 +37,7 @@ jobs:
           terraform apply --auto-approve
     
       - name: Get Server IP
-        run: echo "SERVER_IP=$(terraform output - raw server_public_ip)" >> $GITHUB_ENV
+        run: echo "SERVER_IP=$(terraform output -raw server_public_ip)" >> $GITHUB_ENV
 
       - name: Configure SSH Key
         run: |
