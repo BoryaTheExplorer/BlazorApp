@@ -8,11 +8,17 @@
 
 
   <ItemGroup>
-    <Content Remove="Terraform\**\*" />
+    <None Include="Terraform\**\*" />
+    <None Include="Ansible\**\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Terraform\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Terraform\**\*">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="Ansible\**\*">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
   
 </Project>
