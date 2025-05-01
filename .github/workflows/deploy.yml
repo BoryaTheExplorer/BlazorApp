@@ -10,6 +10,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with: 
+          dotnet-version: '8.0.x'
+
+      - name: Build and publish
+        run: |
+          dotnet publish BlazorApp.csproj -c Release -o ./publish --runtime linux-x64
         
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -26,7 +35,13 @@ jobs:
           cd Terraform
           terraform init
           terraform apply --auto-approve
-      
     
-      - name: Say Hello
-        run: echo "Hello! Deployment Triggered!"
+      - name: Get Server IP
+        run: echo "SERVER_IP=$(terraform output - raw server_public_ip)" >> $GITHUB_ENV
+
+      - name: Configure SSH Key
+        run: |
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      
