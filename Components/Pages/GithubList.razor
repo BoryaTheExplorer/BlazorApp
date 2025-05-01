@@ -2,6 +2,7 @@
 @using BlazorApp.Models
 
 @inject IGitHubService GitHubService
+@inject IJSRuntime JS
 
 @rendermode InteractiveServer
 
@@ -26,7 +27,9 @@
     protected override async Task OnInitializedAsync()
     {
         _mainSha = await GitHubService.GetBranchShaAsync(_token, _owner, _repo);
-        _tags = await GitHubService.GetTagsAsync(_token, _owner, _repo);
+
+        var tagsResult = await GitHubService.GetTagsAsync(_token, _owner, _repo);
+        _tags = tagsResult.Tags;
     }
     protected string GetCommitUrl(string sha)
     {
@@ -42,11 +45,30 @@
     }
     protected async Task SetBranchToCommitAsync(string commitSha)
     {
+        var result = await GitHubService.CheckRunningWorkflowsAsync(_token, _owner, _repo);
+        if (!result.IsSuccess)
+        {
+            await ShowPopup("Workflow running! Rollback cancelled");
+            return;
+        }
+
         await GitHubService.SetBranchToCommitAsync(_token, _owner, _repo, commitSha);
         _mainSha = commitSha;
     }
     protected async Task TriggerMainDeployment()
     {
+        var result = await GitHubService.CheckRunningWorkflowsAsync(_token, _owner, _repo);
+        if (!result.IsSuccess) 
+        {
+            await ShowPopup("Workflow running! Deployment cancelled");
+            return;
+        }
+
         await GitHubService.TriggerWorkflowAsync(_token, _owner, _repo, "deploy.yml", "main");
+    }
+
+    protected async Task ShowPopup(string message)
+    {
+        await JS.InvokeVoidAsync("alert", message);
     }
 }
