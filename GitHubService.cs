@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using BlazorApp.Models;
-using static System.Net.WebRequestMethods;
 
 namespace BlazorApp
 {
@@ -25,7 +24,7 @@ namespace BlazorApp
         {
             try 
             {
-               using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _url + $"{owner}/{repo}/actions/runs?status=in_progress&per_page=1");
+                using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _url + $"{owner}/{repo}/actions/runs?status=in_progress&per_page=1");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 using HttpResponseMessage response = await _client.SendAsync(request);
@@ -37,7 +36,7 @@ namespace BlazorApp
                 var runs = parsed.RootElement.GetProperty("workflow_runs");
                 if (runs.GetArrayLength() <= 0)
                 {
-                    return null;
+                    return WorkflowRunCheckResult.Success(null);
                 }
 
                 var run = runs[0];
@@ -100,21 +99,39 @@ namespace BlazorApp
             }
         }
 
-        public async Task<List<Tag>> GetTagsAsync(string token, string owner, string repo)
+        public async Task<TagGetResult> GetTagsAsync(string token, string owner, string repo)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _url + $"{owner}/{repo}/tags");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            try 
+            { 
+                using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _url + $"{owner}/{repo}/tags");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            HttpResponseMessage response = await _client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+                using HttpResponseMessage response = await _client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-            string json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(json);
-            List<Tag> tags = JsonSerializer.Deserialize<List<Tag>>(json, _serializerOptions);
+                string json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(json);
+                List<Tag> tags = JsonSerializer.Deserialize<List<Tag>>(json, _serializerOptions);
 
-            return tags ?? new List<Tag>();
+                return TagGetResult.Success(tags ?? new List<Tag>());
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.Error.WriteLine($"Github API Error: {ex.Message}");
+                return TagGetResult.Fail(ex.Message);
+            }
+            catch (JsonException ex)
+            {
+                Console.Error.WriteLine($"Json parsing Error: {ex.Message}");
+                return TagGetResult.Fail(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"I have no idea why this happened: {ex.Message}");
+                return TagGetResult.Fail(ex.Message);
+            }
         }
-
         public async Task<bool> IsBranchAtCommitAsync(string token, string owner, string repo, string commitSha, string branch = "main")
         {
             string branchSha = await GetBranchShaAsync(token, owner, repo, branch);
@@ -133,12 +150,25 @@ namespace BlazorApp
 
             var content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Patch, _url + $"{owner}/{repo}/git/refs/heads/{branch}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            request.Content = content;
+            try 
+            {
+                using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Patch, _url + $"{owner}/{repo}/git/refs/heads/{branch}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Content = content;
 
-            HttpResponseMessage response = await _client.SendAsync(request);
-            return response.IsSuccessStatusCode;
+                HttpResponseMessage response = await _client.SendAsync(request);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.Error.WriteLine($"Github API Error: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"I have no idea why this happened: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task TriggerWorkflowAsync(string token, string owner, string repo, string workflowFileName, string @ref = "main")
