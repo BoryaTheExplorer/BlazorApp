@@ -43,6 +43,7 @@ jobs:
 
       - name: Configure SSH Key
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
