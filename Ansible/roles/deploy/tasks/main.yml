@@ -78,6 +78,7 @@
     dest: /etc/nginx/sites-enabled/blazorapp
     state: link
     force: true
+    follow: false
 
 - name: Remove default
   file:
@@ -88,4 +89,4 @@
   service:
     name: nginx
     state: restarted
-    enabled: force
+    enabled: true
