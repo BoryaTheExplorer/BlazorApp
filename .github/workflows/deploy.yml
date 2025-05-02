@@ -47,14 +47,14 @@ jobs:
           echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Instal Ansible and sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible sshpass
+     # - name: Instal Ansible and sshpass
+     #   run: |
+     #     sudo apt-get update
+    #    sudo apt-get install -y ansible sshpass
 
-      - name: Run Playbook
-        run: |
-          ls -al
-          cd Ansible
-          ansible-playbook -i "${{ env.SERVER_IP }}," deploy.yml \
-            --ssh-extra-args="-o StrictHostKeyChecking=no"
+    #  - name: Run Playbook
+     #   run: |
+      #    ls -al
+       #   cd Ansible
+        #  ansible-playbook -i "${{ env.SERVER_IP }}," deploy.yml \
+         #   --ssh-extra-args="-o StrictHostKeyChecking=no"
