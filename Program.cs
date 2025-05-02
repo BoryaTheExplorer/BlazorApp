@@ -1,4 +1,5 @@
 using BlazorApp.Components;
+using Microsoft.Extensions.Options;
 
 namespace BlazorApp
 {
@@ -15,6 +16,7 @@ namespace BlazorApp
             builder.WebHost.ConfigureKestrel(serverOptions =>
             {
                 serverOptions.ListenAnyIP(5000);
+                serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
             });
 
             var app = builder.Build();
@@ -29,7 +31,6 @@ namespace BlazorApp
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             app.UseAntiforgery();
 
