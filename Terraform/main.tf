@@ -113,9 +113,7 @@ resource "aws_eip" "eip" {
   depends_on                = [ aws_internet_gateway.main-gateway, aws_instance.web-server-instance ]
 }
 
-output "server_public_ip" {
-  value = aws_eip.eip.public_ip
-}
+
 
 resource "aws_instance" "web-server-instance" {
   ami               = "ami-0c1ac8a41498c1a9c"
@@ -128,7 +126,18 @@ resource "aws_instance" "web-server-instance" {
     device_index         = 0
     network_interface_id = aws_network_interface.network-interface.id
   }
+user_data = <<-EOF
+            #!/bin/bash
+            apt-get update -y
+            apt-get install -y openssh-server
+            systemctl enable ssh
+            systemctl start ssh
+            EOF
   tags                   = {
     Name                 = "Web-Server"
   }
+}
+
+output "server_public_ip" {
+  value = aws_eip.eip.public_ip
 }
