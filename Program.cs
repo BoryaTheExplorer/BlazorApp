@@ -14,7 +14,7 @@ namespace BlazorApp
             builder.Services.AddScoped<IGitHubService, GitHubService>();
             builder.WebHost.ConfigureKestrel(serverOptions =>
             {
-                serverOptions.ListenAnyIP(80);
+                serverOptions.ListenAnyIP(5000);
             });
 
             var app = builder.Build();
