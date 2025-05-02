@@ -46,4 +46,4 @@
 
       [Install]
       WantedBy=multi-user.target
-    notify: Restart blazorapp
+  notify: Restart blazorapp
