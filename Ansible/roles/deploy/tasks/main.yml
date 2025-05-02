@@ -74,11 +74,6 @@
             }
         }
 
-- name: Remove default
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-
 - name: Restart Nginx
   service:
     name: nginx
