@@ -56,6 +56,18 @@
     state: present
     update_cache: yes
 
+- name: Remove default site config
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+    force: yes
+
+- name: Remove default upstream include
+  file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+    force: yes
+
 - name: Configure Nginx
   copy: 
     dest: /etc/nginx/conf.d/blazorapp.conf
