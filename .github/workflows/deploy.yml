@@ -57,4 +57,6 @@ jobs:
           ls -al
           cd Ansible
           ansible-playbook -i "${{ env.SERVER_IP }}," deploy.yml \
+            --user ubuntu \
+            --private-key ~/.ssh/id_rsa \
             --ssh-extra-args="-o StrictHostKeyChecking=no"
