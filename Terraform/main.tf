@@ -126,13 +126,13 @@ resource "aws_instance" "web-server-instance" {
     device_index         = 0
     network_interface_id = aws_network_interface.network-interface.id
   }
-user_data = <<-EOF
-            #!/bin/bash
-            apt-get update -y
-            apt-get install -y openssh-server
-            systemctl enable ssh
-            systemctl start ssh
-            EOF
+user_data              = <<-EOF
+               #!/bin/bash
+               sudo apt update -y
+               sudo apt install apache2 -y
+               sudo systemctl start apache2
+               sudo bash -c 'echo My very first web server > /var/www/html/index.html'
+               EOF
   tags                   = {
     Name                 = "Web-Server"
   }
