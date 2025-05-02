@@ -74,14 +74,6 @@
             }
         }
 
-- name: Enable config
-  file: 
-    src: /etc/ngix/sites-available/blazorapp
-    dest: /etc/nginx/sites-enabled/blazorapp
-    state: link
-    force: true
-    follow: false
-
 - name: Remove default
   file:
     path: /etc/nginx/sites-enabled/default
