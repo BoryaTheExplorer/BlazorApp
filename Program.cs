@@ -17,7 +17,7 @@ namespace BlazorApp
             builder.WebHost.ConfigureKestrel(serverOptions =>
             {
                 serverOptions.ListenAnyIP(5000);
-                serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
+                //serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
             });
 
             var app = builder.Build();
