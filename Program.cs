@@ -12,6 +12,7 @@ namespace BlazorApp
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddAntiforgery();
             builder.Services.AddScoped<IGitHubService, GitHubService>();
             builder.WebHost.ConfigureKestrel(serverOptions =>
             {
