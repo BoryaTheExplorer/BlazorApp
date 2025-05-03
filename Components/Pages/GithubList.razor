@@ -10,19 +10,23 @@
 <h3>Versions</h3>
 
 <div>
-    @if (_tags == null)
+    @if ()
     {
-        <p>Loading...</p>
-    }
-    else if (!_tags.Any())
-    {
-        <p>No repos found.</p>
-    }
-    else
-    {
-        @foreach (var item in _tags)
+    else if (_tags == null)
         {
-            <Commit OnRollbackClick="() => SetBranchToCommitAsync(item.Commit.Sha)" OnDeployClick="() => TriggerMainDeployment()" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
+            <p>Loading...</p>
+        }
+        else if (!_tags.Any())
+        {
+            <p>No repos found.</p>
+        }
+        else
+        {
+            @foreach (var item in _tags)
+            {
+                <Commit OnRollbackClick="() => SetBranchToCommitAsync(item.Commit.Sha)" OnDeployClick="() => TriggerMainDeployment()" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
+            }
+
         }
     }
 </div>
@@ -30,7 +34,7 @@
 @code {
     private List<Tag> _tags = new List<Tag>();
 
-    private string _token = Environment.GetEnvironmentVariable("GITHUB_TOKEN")!;
+    private string _token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
     private string _owner = "BoryaTheExplorer";
     private string _repo = "BlazorApp";
     private string _mainSha = "";
