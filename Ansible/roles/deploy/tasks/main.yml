@@ -43,7 +43,7 @@
       SyslogIdentifier=blazorapp
       User=ubuntu
       Environment=ASPNETCORE_ENVIRONMENT=Production
-      Environment=GITHUB_TOKEN={{ gh_token }}
+      Environment="GITHUB_TOKEN={{ gh_token }}"
 
       [Install]
       WantedBy=multi-user.target
