@@ -14,16 +14,11 @@ namespace BlazorApp
                 .AddInteractiveServerComponents();
             builder.Services.AddAntiforgery();
             builder.Services.AddScoped<IGitHubService, GitHubService>();
-            builder.WebHost.ConfigureKestrel(serverOptions =>
-            {
-                serverOptions.ListenAnyIP(5000);
-                //serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
-            });
+            builder.WebHost.UseKestrel().UseUrls("http://0.0.0.0:5000");
 
             var app = builder.Build();
             
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
