@@ -10,25 +10,24 @@
 <h3>Versions</h3>
 
 <div>
-    @if ()
+    
+     @if (_tags == null)
     {
-    else if (_tags == null)
-        {
-            <p>Loading...</p>
-        }
-        else if (!_tags.Any())
-        {
-            <p>No repos found.</p>
-        }
-        else
-        {
-            @foreach (var item in _tags)
-            {
-                <Commit OnRollbackClick="() => SetBranchToCommitAsync(item.Commit.Sha)" OnDeployClick="() => TriggerMainDeployment()" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
-            }
-
-        }
+        <p>Loading...</p>
     }
+    else if (!_tags.Any())
+    {
+        <p>No repos found.</p>
+    }
+    else
+    {
+        @foreach (var item in _tags)
+        {
+            <Commit OnRollbackClick="() => SetBranchToCommitAsync(item.Commit.Sha)" OnDeployClick="() => TriggerMainDeployment()" Url="@GetCommitUrl(item.Commit.Sha)" Repo="@_repo" Tag="@item.Name" IsActiveCommit="@IsMainAtCommit(item.Commit.Sha)" />
+        }
+
+    }
+    
 </div>
 
 @code {
